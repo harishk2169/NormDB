@@ -1,0 +1,52 @@
+4
+11
+AUTHOR_ID
+BOOK_ID
+AUTHOR_NAME
+BOOK
+Da_001 
+Da001_Sel
+Damasio
+Self Comes to Mind
+To_015 
+To015_Fel
+Tolkien
+Fellowship of the Rings_Lord of the Rings
+Mi_009
+Mi009_Emo
+Minsky
+Emotion Machine
+Mi_009
+Mi009_Soc
+Minsky 
+Society of Mind
+Ra_001
+Ra001_Pha
+Ramachandran
+Phantoms in the Brain
+Ro_015
+Ro015_Fan
+Rowling
+Fantastic Beasts and Where to Find Them
+Ro_015
+Ro015_Gob
+Rowling 
+Goblet of Fire_Harry Potter
+Ro_015
+Ro015_Pri
+Rowling
+Prisoner of Azkaban_Harry Potter
+Sa_001
+Sa001_Wha
+Safina
+What Animals Think
+Wo_015
+Wo015_Wod
+Wodehouse
+Wodehouse at the Wicket
+Ro_015
+Ro015_Phi
+Rowling
+Philosopher’s Stone_Harry Potter
+Wod
+Row
