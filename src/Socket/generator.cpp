@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     int count = 1;
     char *c;
     string cmd;
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 10; i++)
     {
         cout << "Generating Process... " << count << endl;
         count++;

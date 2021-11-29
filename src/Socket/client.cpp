@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
     int sockfd, portnum, n;
     struct sockaddr_in server_addr;
     char inputbuf[MAX_INPUT_SIZE];
-    char staticIN[] = "1 << 9 + 4 + 9 - 8 >> 2  ";
-    staticIN[25] = '\n';
+    char staticIN[] = "      ";
+    staticIN[5] = '\n';
     if (argc < 3)
     {
         fprintf(stderr, "usage %s <server-ip-addr> <server-port>\n", argv[0]);
@@ -76,12 +76,13 @@ int main(int argc, char *argv[])
     do
     {
         /* Ask user for message to send to server */
-        // sleep_ms(rand() % 1000);
+        sleep_ms(rand() % 10000);
         printf("Please enter the message to the server: %s\n", staticIN);
         // bzero(inputbuf, MAX_INPUT_SIZE);
         // fgets(inputbuf, MAX_INPUT_SIZE - 1, stdin);
         // printf("%s %s %ld %ld\n", inputbuf, staticIN, strlen(inputbuf), strlen(staticIN));
         /* Write to server */
+        staticIN[0] = rand() % 5 + '0';
         ti = clock();
         n = write(sockfd, staticIN, strlen(staticIN));
         if (n < 0)
