@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in address;
 
     char buffer[MAX_INPUT_SIZE]; // data buffer of 256
-    char *out = (char *)malloc(sizeof(char) * 10);
+    char *out = (char *)malloc(sizeof(char) * 256);
 
     // set of socket descriptors
     fd_set readfds;
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
         for (i = 0; i < max_clients; i++)
         {
             sd = client_socket[i];
-
+			bzero(buffer, MAX_INPUT_SIZE);
             if (FD_ISSET(sd, &readfds))
             {
                 valread = read(sd, buffer, MAX_INPUT_SIZE);
@@ -160,14 +160,15 @@ int main(int argc, char *argv[])
                 for (int i = 0; buffer[i] != '\n'; i++)
                     printf("%c", buffer[i]);
                 printf("\n");
-
+				bzero(out, strlen(out));
                 handleInput(buffer, out);
 
-                printf("Sending Reply to Client %d: %s\n", i, out);
+                printf("\nSending Reply to Client %d: %s\n", i, out);
 
                 send(sd, out, strlen(out), 0);
             }
         }
     }
+	free(out);
     return 0;
 }
