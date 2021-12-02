@@ -25,7 +25,6 @@ void Parser::choose_select()
 	{
 		extract_sort_column();
 	}
-
 }
 void Parser::choose_create(vector<pair<string, string>> &val)
 {
@@ -348,139 +347,62 @@ void sortColumn(vector<vector<string>> &t, vector<vector<string>> &res, string c
 	}
 }
 
-
-// int main()
-// {
-// 	// string query = "Create table abc (column1 int, column2 var, column3 varchar);";
-// 	// string query = "DELETE FROM abc WHERE hey!=hey";
-// 	// string query = "DROP TABLE abc ";
-// 	// string query = "UPDATE table_name SET column1=value1 , column2=value2 WHERE a=a;";
-// 	// string query = "Insert INTO table1 Values (a, b, c)";
-
-// 	vector<vector<string>> tabel1{
-// 		{"column1", "column2", "column3"},
-// 		{"c1_val1", "c2_val1", "c3_val1"},
-// 		{"c1_val3", "c2_val3", "c3_val3"},
-// 		{"c1_val2", "c2_val2", "c3_val2"},
-
-// 	};
-// 	vector<vector<string>> sorted_table;
-// 	vector<string> res;
-
-// 	// string query = "Select * FROM tabel1 WHERE column2=c2_val2";
-// 	string query = "SElECT * FROM tabel1 ORDER BY column1";
-// 	Parser tes(query);
-// 	vector<string> query_token = tes.query_token;
-// 	vector<pair<string, string>> tabel_val;
-// 	vector<string> row_val;
-// 	unordered_map<string, int> query_table{
-// 		{"select", 1},
-// 		{"create", 2},
-// 		{"insert", 3},
-// 		{"drop", 4},
-// 		{"delete", 5},
-// 		{"update", 6}};
-
-// 	switch (query_table[query_token[0]])
-// 	{
-// 	case 1:
-// 		tes.choose_select();
-// 		tes.print_mat();
-// 		if (tes.clause_set.find("where") != tes.clause_set.end())
-// 		{
-// 			conditionTable(tabel1, res, tes.mat[2][1]);
-// 			for (auto x : res)
-// 			{
-// 				cout << x << " ";
-// 			}
-// 		}
-// 		if (tes.clause_set.find("order") != tes.clause_set.end())
-// 		{
-// 			sortColumn(tabel1, sorted_table, tes.mat[2][1]);
-// 			for (auto x : sorted_table)
-// 			{
-// 				for (auto y : x)
-// 				{
-// 					cout << y << " ";
-// 				}
-// 				cout << endl;
-// 			}
-// 		}
-// 		break;
-// 	case 2:
-// 		tes.choose_create(tabel_val);
-// 		cout << tes.tabelname << endl;
-// 		print_table(tabel_val);
-// 		break;
-// 	case 3:
-// 		tes.choose_insert(row_val);
-// 		cout << tes.tabelname << endl;
-// 		for (auto x : row_val)
-// 		{
-// 			cout << x << " ";
-// 		}
-// 		break;
-
-// 	case 4:
-// 		tes.choose_drop();
-// 		cout << tes.tabelname << endl;
-
-// 		break;
-// 	case 5:
-// 		tes.choose_delete();
-// 		cout << tes.tabelname << endl;
-// 		tes.print_mat();
-// 		break;
-// 	case 6:
-// 		tes.choose_update();
-// 		cout << tes.tabelname << endl;
-// 		tes.print_mat();
-// 		break;
-// 	}
-// };
-
-void StringToCharPointer(char *to, string &str) {
+void StringToCharPointer(char *to, string &str)
+{
 	bzero(to, MAX_INPUT_SIZE);
 	int i = 0;
-	for(char c : str) {
-		to[i++] = c;
+	for (char c : str)
+	{
+		to[i] = c;
+		i++;
 	}
 	to[i] = '\0';
-	while(i<MAX_INPUT_SIZE){
-		to[i]='\0';
+	while (i < MAX_INPUT_SIZE)
+	{
+		to[i] = '\0';
 		i++;
 	}
 }
 
-void vectorToCharPointer(char *to, vector<vector<string>> &from) {
+void vectorToCharPointer(char *to, vector<vector<string>> &from)
+{
 	bzero(to, MAX_INPUT_SIZE);
 	int i = 0;
-	if(from.empty()) {
-		strcpy(to, "!!EMPTY!!!!");
+	if (from.empty())
+	{
+		strcpy(to, "!! TABLE DOESN'T EXIST !!!!");
 		return;
 	}
-	for(auto &vec : from) {
-		for(string &str : vec) {
-			for(char c : str) {
-				to[i++] = c;
+	for (auto &vec : from)
+	{
+		for (string &str : vec)
+		{
+			for (char c : str)
+			{
+				to[i] = c;
+				i++;
 			}
-			to[i++] = '\t';
+			to[i] = '\t';
+			i++;
 		}
-		to[i++] = '\n';
+		to[i] = '\n';
+		i++;
 	}
 	to[i] = '\0';
-	while(i<MAX_INPUT_SIZE){
-		to[i]='\0';
+	while (i < MAX_INPUT_SIZE)
+	{
+		to[i] = '\0';
 		i++;
 	}
 }
 
-char* process_Query(string query){
- 	load("table");
+char *process_Query(string query)
+{
+	load("table");
 
-    string op;
+	string op;
 	vector<vector<string>> data;
-	char *out = (char *) malloc(MAX_INPUT_SIZE);
+	char *out = (char *)malloc(MAX_INPUT_SIZE);
 	vector<vector<string>> sorted_table;
 	vector<vector<string>> conditioned_table;
 	vector<string> res;
@@ -495,6 +417,7 @@ char* process_Query(string query){
 	vector<pair<string, string>> tabel_val;
 
 	vector<string> row_val;
+	string errorMsg = "!! Incorrectly Formatted Query !!";
 	unordered_map<string, int> query_table{
 		{"select", 1},
 		{"create", 2},
@@ -502,8 +425,8 @@ char* process_Query(string query){
 		{"drop", 4},
 		{"delete", 5},
 		{"update", 6},
-		{"take",7},
-		{"view",8}};
+		{"take", 7},
+		{"view", 8}};
 
 	switch (query_table[query_token[0]])
 	{
@@ -514,40 +437,41 @@ char* process_Query(string query){
 		if (tes.clause_set.find("where") != tes.clause_set.end())
 		{
 			conditionTable(data, res, tes.mat[2][1]);
+			conditioned_table.push_back(data[0]);
 			conditioned_table.push_back(res);
 			vectorToCharPointer(out, conditioned_table);
 			break;
-
 		}
 		if (tes.clause_set.find("order") != tes.clause_set.end())
 		{
 			sortColumn(data, sorted_table, tes.mat[2][1]);
+			sorted_table.insert(sorted_table.begin(), data[0]);
 			vectorToCharPointer(out, sorted_table);
-			break;	
+			break;
 		}
 		vectorToCharPointer(out, data);
 		break;
 	case 2:
 
 		tes.choose_create(tabel_val);
-        
-        op=addTable(tes.tabelname,tabel_val);
+
+		op = addTable(tes.tabelname, tabel_val);
 		StringToCharPointer(out, op);
 
-        // TODO: process OP to char * and return
-		
+		// TODO: process OP to char * and return
+
 		break;
 	case 3:
 		tes.choose_insert(row_val);
-        op=insertInto(tes.tabelname,row_val);
-		StringToCharPointer(out,op);
-        // TODO: process OP to char * and return
+		op = insertInto(tes.tabelname, row_val);
+		StringToCharPointer(out, op);
+		// TODO: process OP to char * and return
 		break;
 
 	case 4:
 		tes.choose_drop();
-        op=dropTable(tes.tabelname);
-		StringToCharPointer(out,op);
+		op = dropTable(tes.tabelname);
+		StringToCharPointer(out, op);
 
 		break;
 	case 5:
@@ -561,13 +485,15 @@ char* process_Query(string query){
 		tes.print_mat();
 		break;
 	case 7:
-		op=takeSnap(tes.query_token[2]);
-		StringToCharPointer(out,op);
+		op = takeSnap(tes.query_token[2]);
+		StringToCharPointer(out, op);
 		break;
 	case 8:
-		data=showSnap(tes.query_token[2]);
+		data = showSnap(tes.query_token[2]);
 		vectorToCharPointer(out, data);
 		break;
+	default:
+		StringToCharPointer(out, errorMsg);
 	}
 	flush("table");
 	return out;

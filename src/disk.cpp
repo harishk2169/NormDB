@@ -37,6 +37,7 @@ string addTable(string tableName, vector<pair<string, string>> &cols)
     x += 32;
     for (int i = 0; i < s; i++)
     {
+        // cout << cols[i].first << " " << cols[i].second << endl;
         memcpy((void *)(table + x), myCSTR(cols[i].first), STR_SIZE);
         memcpy((void *)(table + x + 32), myCSTR(cols[i].second), STR_SIZE);
         x += 64;
@@ -47,6 +48,11 @@ string addTable(string tableName, vector<pair<string, string>> &cols)
     tableLoc[tableName] = ls;
     tablePtrs[ls] = malloc(PAGE_SIZE);
     memcpy(tablePtrs[ls], &k, INT_SIZE);
+    // cout << ls << " " << tablePtrs[ls] << endl;
+    // for (auto &x : tableLoc)
+    // {
+    //     cout << x.first << " " << x.second << endl;
+    // }
     return "INSERTED";
 }
 
@@ -128,6 +134,11 @@ string dropTable(string name)
             tablePtrs[j - 1] = tablePtrs[j];
         tableLoc.erase(ref);
         remove(ref.c_str());
+        // cout << "AFTER DROP" << endl;
+        // for (auto &x : tableLoc)
+        // {
+        //     cout << x.first << " " << x.second << endl;
+        // }
         return "DROPPED";
     }
     return "NOT FOUND";
@@ -148,7 +159,8 @@ void flush(string fileName)
 void load(string fileName)
 {
     int fd = open(fileName.c_str(), O_RDWR, S_IWUSR | S_IRUSR);
-    if (fd == -1) {
+    if (fd == -1)
+    {
         int k = 4;
         memcpy(table, &k, INT_SIZE);
         return;
@@ -166,17 +178,22 @@ void load(string fileName)
         // cout << l << " LOC " << loc << endl;
         ref = giveString(loc + 4);
         lc = tableLoc.size();
-        tableLoc[ref] = lc;
+        if (tableLoc.find(ref) == tableLoc.end())
+            tableLoc[ref] = lc;
         xd = open(ref.c_str(), O_RDWR | O_CREAT, S_IWUSR | S_IRUSR);
         tablePtrs[lc] = malloc(PAGE_SIZE);
         read(xd, tablePtrs[lc], PAGE_SIZE);
         loc += l;
     }
+    // for (auto &x : tableLoc)
+    // {
+    //     cout << x.first << " " << x.second << endl;
+    // }
 }
 
 string insertInto(string name, vector<string> data)
 {
-    if(tableLoc.find(name)==tableLoc.end())
+    if (tableLoc.find(name) == tableLoc.end())
         return "!!Table Not Found!!";
     vector<pair<string, string>> meta = findTable(name);
     if (meta.size() != data.size())
@@ -190,7 +207,7 @@ string insertInto(string name, vector<string> data)
     for (int i = 0; i < size; i++)
     {
         // cout << i << " " << loc << " " << sz << endl;
-        if (meta[i].second == "INT")
+        if (meta[i].second == "int")
         {
             gg = stoi(data[i]);
             // cout << gg << endl;
@@ -213,7 +230,8 @@ string insertInto(string name, vector<string> data)
 vector<vector<string>> viewTable(string name)
 {
     vector<vector<string>> out;
-    if(tableLoc.find(name)==tableLoc.end())out;
+    if (tableLoc.find(name) == tableLoc.end())
+        return out;
     vector<pair<string, string>> meta = findTable(name);
     int size = meta.size();
     char *str_temp = (char *)malloc(STR_SIZE);
@@ -223,19 +241,19 @@ vector<vector<string>> viewTable(string name)
     string x;
     int xx;
     vector<string> kk;
-    for(int i=0;i<size;i++)
+    for (int i = 0; i < size; i++)
         kk.push_back(meta[i].first);
     out.push_back(kk);
-    
+
     while (sz < loc)
     {
         kk.clear();
-        // memcpy(&gg, table + sz, INT_SIZE);
+        memcpy(&gg, table + sz, INT_SIZE);
         sz += 4;
         for (int i = 0; i < size; i++)
         {
             // cout << loc << " " << i << " " << sz << endl;
-            if (meta[i].second == "INT")
+            if (meta[i].second == "int")
             {
                 // cout << xx << " ";
                 memcpy(&xx, tablePtrs[tableLoc[name]] + sz, INT_SIZE);
@@ -260,7 +278,7 @@ vector<vector<string>> viewTable(string name)
 
 string takeSnap(string name)
 {
-    if (!tableLoc[name])
+    if (tableLoc.find(name) == tableLoc.end())
         return "!!Table Not Found!!";
     string snapName = name + "_snap";
     int xd = open(snapName.c_str(), O_RDWR | O_CREAT, S_IWUSR | S_IRUSR);
@@ -283,7 +301,7 @@ vector<vector<string>> showSnap(string name)
     string x;
     int xx;
     vector<string> kk;
-    for(int i=0;i<size;i++)
+    for (int i = 0; i < size; i++)
         kk.push_back(meta[i].first);
     out.push_back(kk);
     while (sz < loc)
@@ -292,7 +310,7 @@ vector<vector<string>> showSnap(string name)
         sz += 4;
         for (int i = 0; i < size; i++)
         {
-            if (meta[i].second == "INT")
+            if (meta[i].second == "int")
             {
                 memcpy(&xx, tab + sz, INT_SIZE);
                 kk.push_back(to_string(xx));
@@ -311,77 +329,3 @@ vector<vector<string>> showSnap(string name)
     }
     return out;
 }
-
-// int main()
-// {
-//     for (int i = 0; i < TABLE_SIZE; i++)
-//         tablePtrs[i] = NULL;
-//     load("table");
-//     vector<pair<string, string>> got;
-//     // int k = 4;
-//     // memcpy(table, &k, INT_SIZE);
-//     // vector<pair<string, string>> col;
-//     // col.push_back({"ID", "INT"});
-//     // col.push_back({"NAME", "STR"});
-//     // col.push_back({"EMAIL", "STR"});
-//     // col.push_back({"PHONE", "STR"});
-//     // addTable("TABLE1", col);
-//     // col[0].first += "2";
-//     // col[1].first += "2";
-//     // col[2].first += "2";
-//     // col[3].first += "2";
-//     // addTable("TABLE2", col);
-//     // col.push_back({"ADD-ON", "STR"});
-//     // addTable("TABLE3", col);
-//     // vector<pair<string, string>> got = findTable("TABLE2");
-//     // // memcpy(&p, table, INT_SIZE);
-//     // // cout << "Next Free Space " << p << endl;
-//     // for (int i = 0; i < got.size(); i++)
-//     // {
-//     //     cout << got[i].first << " " << got[i].second << endl;
-//     // }
-//     // cout << dropTable("TABLE1") << endl;
-
-//     // // memcpy(&p, table, INT_SIZE);
-//     // // cout << "Next Free Space " << p << endl;
-//     // got = findTable("TABLE1");
-//     // if (!got.size())
-//     //     cout << "Not Found 1" << endl;
-//     // got = findTable("TABLE2");
-//     // if (!got.size())
-//     //     cout << "Not Found 2" << endl;
-//     // for (int i = 0; i < got.size(); i++)
-//     // {
-//     //     cout << got[i].first << " " << got[i].second << endl;
-//     // }
-//     takeSnap("TABLE2");
-//     vector<string> pk = {"6", "whfdasc", "sacy@gmail.com", "65823554"};
-//     cout << insertInto("TABLE2", pk) << endl;
-//     // pk[0] = "4";
-//     // pk[1] = "basdfcd";
-//     // pk[2] = "bcd@admail.com";
-//     // pk[3] = "1237623527";
-//     // cout << insertInto("TABLE2", pk) << endl;
-//     vector<vector<string>> ans = viewTable("TABLE2");
-//     cout << "PRinting Tab2" << endl;
-//     for (int i = 0; i < ans.size(); i++)
-//     {
-//         for (auto x : ans[i])
-//         {
-//             cout << x << "\t";
-//         }
-//         cout << endl;
-//     }
-//     ans = showSnap("TABLE2");
-//     cout << "Snap" << endl;
-//     for (int i = 0; i < ans.size(); i++)
-//     {
-//         for (auto x : ans[i])
-//         {
-//             cout << x << "\t";
-//         }
-//         cout << endl;
-//     }
-//     flush("table");
-//     return 0;
-// }

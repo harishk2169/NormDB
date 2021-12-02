@@ -15,7 +15,6 @@
 #include "parser.h"
 #define MAX_INPUT_SIZE 4096
 
-
 int main(int argc, char *argv[])
 {
     if (argc < 2)
@@ -147,7 +146,7 @@ int main(int argc, char *argv[])
         for (i = 0; i < max_clients; i++)
         {
             sd = client_socket[i];
-			bzero(buffer, MAX_INPUT_SIZE);
+            bzero(buffer, MAX_INPUT_SIZE);
             if (FD_ISSET(sd, &readfds))
             {
                 valread = read(sd, buffer, MAX_INPUT_SIZE);
@@ -162,20 +161,20 @@ int main(int argc, char *argv[])
                 for (int i = 0; buffer[i] != '\n'; i++)
                     printf("%c", buffer[i]);
                 printf("\n");
-				// bzero(out, strlen(out));
+                // bzero(out, strlen(out));
                 // handleInput(buffer, out);
-				// Harshit Char * buffer
-				// convert buffer to string
-				string convertedString = string(buffer);
-				// cout << "Converted string : \n" << buffer << "\n";
-				char *out=process_Query(convertedString);
+                // Harshit Char * buffer
+                // convert buffer to string
+                string convertedString = string(buffer);
+                // cout << "Converted string : \n" << buffer << "\n";
+                char *out = process_Query(convertedString);
                 // cout<<out;
-				// cout << "Table name is : " << par.tabelname << "\n";
+                // cout << "Table name is : " << par.tabelname << "\n";
 
-                printf("\nSending Reply to Client %d: %s\n", i, out);
+                printf("\nSending Reply to Client %d: \n%s\n", i, out);
 
                 send(sd, out, strlen(out), 0);
-				bzero(out, MAX_INPUT_SIZE);
+                bzero(out, MAX_INPUT_SIZE);
             }
         }
     }
