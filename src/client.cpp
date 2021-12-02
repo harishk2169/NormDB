@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             fprintf(stderr, "ERROR reading from socket\n");
             exit(1);
         }
-        printf("Server replied:\n %s\n", inputbuf);
+        printf("Server replied:\n%s\n", inputbuf);
         tf = clock();
         // printf("Time %f sec\n", ((double)(tf - ti)) / CLOCKS_PER_SEC);
     } while (1);
