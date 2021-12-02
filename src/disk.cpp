@@ -158,6 +158,8 @@ void flush(string fileName)
 
 void load(string fileName)
 {
+    if (tableLoc.size())
+        return;
     int fd = open(fileName.c_str(), O_RDWR, S_IWUSR | S_IRUSR);
     if (fd == -1)
     {
