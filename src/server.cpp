@@ -12,7 +12,9 @@
 #include <limits.h>
 #include <math.h>
 #include "server.h"
-#define MAX_INPUT_SIZE 256
+#include "parser.h"
+#define MAX_INPUT_SIZE 4096
+
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +31,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in address;
 
     char buffer[MAX_INPUT_SIZE]; // data buffer of 256
-    char *out = (char *)malloc(sizeof(char) * 256);
+    // char *out = (char *)malloc(sizeof(char) *4096);
 
     // set of socket descriptors
     fd_set readfds;
@@ -160,15 +162,22 @@ int main(int argc, char *argv[])
                 for (int i = 0; buffer[i] != '\n'; i++)
                     printf("%c", buffer[i]);
                 printf("\n");
-				bzero(out, strlen(out));
-                handleInput(buffer, out);
+				// bzero(out, strlen(out));
+                // handleInput(buffer, out);
+				// Harshit Char * buffer
+				// convert buffer to string
+				string convertedString = string(buffer);
+				// cout << "Converted string : \n" << buffer << "\n";
+				char *out=process_Query(convertedString);
+                // cout<<out;
+				// cout << "Table name is : " << par.tabelname << "\n";
 
                 printf("\nSending Reply to Client %d: %s\n", i, out);
 
                 send(sd, out, strlen(out), 0);
+				bzero(out, MAX_INPUT_SIZE);
             }
         }
     }
-	free(out);
     return 0;
 }
