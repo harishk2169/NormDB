@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     {
         /* Ask user for message to send to server */
         // sleep_ms(rand() % 10000);
-        printf("Please enter the message to the server: \n");
+        printf("\nPlease enter the message to the server: \n");
         bzero(inputbuf, MAX_INPUT_SIZE);
         fgets(inputbuf, MAX_INPUT_SIZE - 1, stdin);
         ti = clock();
@@ -93,7 +93,8 @@ int main(int argc, char *argv[])
             fprintf(stderr, "ERROR reading from socket\n");
             exit(1);
         }
-        printf("Server replied:\n%s\n", inputbuf);
+        printf("\nServer replied:\n%s\n", inputbuf);
+		printf("\n---------------------------------\n");
         tf = clock();
         // printf("Time %f sec\n", ((double)(tf - ti)) / CLOCKS_PER_SEC);
     } while (1);
